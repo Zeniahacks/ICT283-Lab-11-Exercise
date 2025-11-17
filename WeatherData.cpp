@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <numeric>
 
 // WeatherRecord implementation
 WeatherRecord::WeatherRecord(const Date& d, double ws, double temp, double sr)
@@ -120,6 +121,11 @@ Date WeatherDataCollection::parseDate(const std::string& dateTimeString) {
         throw std::invalid_argument("Failed to parse date");
     }
 
+    // Validate date components
+    if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100) {
+        throw std::invalid_argument("Invalid date values: " + datePart);
+    }
+
     return Date(day, month, year);
 }
 
@@ -196,6 +202,26 @@ double WeatherDataCollection::calculateSPCC(int month, const std::string& correl
 
     return numerator / denominator;
 }
+
+// New implementation for Lab 11
+std::vector<WeatherRecord> WeatherDataCollection::getDataForYearMonth(int year, int month) const
+{
+    std::vector<WeatherRecord> result;
+
+    if (dataByMonth.contains(month))
+    {
+        for (const auto& recordPtr : dataByMonth.at(month))
+        {
+            if (recordPtr->date.GetYear() == year)
+            {
+                result.push_back(*recordPtr);
+            }
+        }
+    }
+
+    return result;
+}
+
 
 void WeatherDataCollection::displayAllData() const {
     std::cout << "=== All Weather Data (In-Order Traversal) ===" << std::endl;
