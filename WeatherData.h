@@ -30,6 +30,39 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const WeatherRecord& wr);
 };
 
+/// @brief Custom Map wrapper
+template<typename K, typename V>
+class Map
+{
+private:
+    std::map<K, V> internalMap;
+
+public:
+    Map() = default;
+
+    void insert(const K& key, const V& value)
+    {
+        internalMap[key] = value;
+    }
+
+    bool contains(const K& key) const
+    {
+        return internalMap.find(key) != internalMap.end();
+    }
+
+    V& at(const K& key)
+    {
+        return internalMap.at(key);
+    }
+
+    const V& at(const K& key) const
+    {
+        return internalMap.at(key);
+    }
+};
+
+
+
 /// @class WeatherDataCollection
 class WeatherDataCollection {
 private:
