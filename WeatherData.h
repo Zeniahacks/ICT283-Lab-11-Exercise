@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <cmath>
 
 // Forward declarations
 class WeatherRecord;
