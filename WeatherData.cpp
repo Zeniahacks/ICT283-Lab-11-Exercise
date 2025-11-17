@@ -275,10 +275,47 @@ namespace Statistics
     }
 }
 
+void WeatherDataCollection::generateMonthlyStats(int year, const std::string& filename) const
+{
+    std::ofstream file(filename);
+    if (!file.is_open())
+    {
+        std::cerr << "Error: Could not create file " << filename << std::endl;
+        return;
+    }
+
+    file << year << std::endl;
+
+    for (int month = 1; month <= 12; month++)
+    {
+        auto monthlyData = getDataForYearMonth(year, month);
+        if (monthlyData.empty())
+            continue;
+
+        // Extract data for calculations
+        std::vector<double> windSpeeds, temperatures, solarRads;
+        double totalSolar = 0.0;
+
+        for (const auto& record : monthlyData)
+        {
+            windSpeeds.push_back(record.windSpeed);
+            temperatures.push_back(record.temperature);
+            solarRads.push_back(record.solarRadiation);
+            totalSolar += record.solarRadiation;
+        }
+
+
+    }
+}
+
+
 
 void WeatherDataCollection::displayAllData() const {
-    std::cout << "=== All Weather Data (In-Order Traversal) ===" << std::endl;
-    weatherDataBST.inOrder(printWeatherRecord);
+    std::cout << "=== All Weather Data (" << getTotalRecords() << " records) ===" << std::endl;
+    weatherDataBST.inOrder([](const WeatherRecord& record)
+    {
+        std::cout << record << std::endl;
+    });
 }
 
 int WeatherDataCollection::getTotalRecords() const {
