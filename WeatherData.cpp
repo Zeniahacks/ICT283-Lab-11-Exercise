@@ -222,6 +222,51 @@ std::vector<WeatherRecord> WeatherDataCollection::getDataForYearMonth(int year, 
     return result;
 }
 
+// Statistical namespace implementation
+namespace Statistics
+{
+    double calculateMean(const std::vector<double>& values)
+    {
+        if (values.empty())
+            return 0.0;
+
+        double sum = std::accumulate(values.begin(), values.end(), 0.0);
+        return sum / values.size();
+    }
+
+    double calculateStdDev(const std::vector<double>& values)
+    {
+        if (values.size() < 2)
+            return 0.0;
+
+        double mean = calculateMean(values);
+        return sumSq = 0.0;
+
+        for (double val : values)
+        {
+            sumSq += (val - mean) * (val - mean);
+        }
+
+        return std::sqrt(sumSq / (values.size() - 1));
+    }
+
+    double calculateMAD(const std::vector<double>& values)
+    {
+        if (values.empty())
+            return 0.0;
+
+        double mean = calculateMean(values);
+        return sumAbs = 0.0;
+
+        for (double val : values)
+        {
+            sumAbs += std::abs(val - mean);
+        }
+
+        return sumAbs / values.size();
+    }
+}
+
 
 void WeatherDataCollection::displayAllData() const {
     std::cout << "=== All Weather Data (In-Order Traversal) ===" << std::endl;
