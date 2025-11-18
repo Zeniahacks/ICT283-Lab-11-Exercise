@@ -93,6 +93,39 @@ private:
         cout << "S_R" << weatherData.calculateSPCC(month, "S_R") << endl;
         cout << "T_R" << weatherData.calculateSPCC(month, "T_R") << endl;
     }
+
+    void generateReport()
+    {
+        if (!dataLoaded)
+        {
+            cout << "Please load the data first (Option 1)." << endl;
+            return;
+        }
+
+        int year;
+        cout << "Enter year for report: ";
+        cin >> year;
+
+        weatherData.generateMonthlyStats(year, "WindTempSolar.csv");
+        cout << "Report generated: WindTempSolar.csv" << endl;
+    }
+
+    void displayStructuredinfo()
+    {
+        if (!dataLoaded)
+        {
+            cout << "Please load the data first (Option 1)." << endl;
+            return;
+        }
+
+        cout << "\n=== Data Structure Information ===" << endl;
+        cout << "Total records: " << weatherData.getTotalRecords() << endl;
+    }
+
+    // Demonstration of map usage
+    Map<string, int> testMap;
+    testMap.insert("test", 42);
+    cout << "Custom Map test: " << testMap.at("test") << endl;
 };
 
 
