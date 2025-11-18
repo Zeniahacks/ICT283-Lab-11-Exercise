@@ -36,8 +36,12 @@ WeatherDataCollection::WeatherDataCollection()
 WeatherDataCollection::~WeatherDataCollection() {}
 
 // Add weather record
-void WeatherDataCollection::addWeatherRecord(const WeatherRecord& record) {
+void WeatherDataCollection::addWeatherRecord(const WeatherRecord& record)
+{
+    WeatherRecord* recordCopy = new WeatherRecord(record);
+
     weatherDataBST.insert(record);
+
     int month = record.date.GetMonth();
 
     // Use custom Map's insert method
@@ -46,7 +50,8 @@ void WeatherDataCollection::addWeatherRecord(const WeatherRecord& record) {
         dataByMonth.insert(month, std::vector<WeatherRecord*>());
     }
 
-    dataByMonth.at(month).push_back(const_cast<WeatherRecord*>(&record));
+    // Store the heap-allocated copy
+    dataByMonth.at(month).push_back(recordCopy);
 }
 
 // To check if month exists
