@@ -35,6 +35,7 @@ WeatherDataCollection::WeatherDataCollection()
 
 WeatherDataCollection::~WeatherDataCollection() {}
 
+// Add weather record
 void WeatherDataCollection::addWeatherRecord(const WeatherRecord& record) {
     weatherDataBST.insert(record);
     int month = record.date.GetMonth();
@@ -45,13 +46,15 @@ void WeatherDataCollection::addWeatherRecord(const WeatherRecord& record) {
         dataByMonth.insert(month, std::vector<WeatherRecord*>());
     }
 
-    dataByMonth[month].push_back(const_cast<WeatherRecord*>(&record));
+    dataByMonth.at(month).push_back(const_cast<WeatherRecord*>(&record));
 }
 
+// To check if month exists
 bool WeatherDataCollection::monthExists(int month) const {
     return dataByMonth.contains(month);
 }
 
+// To allow the app to load from a txt file
 void WeatherDataCollection::loadFromFiles(const std::string& dataSourceFile) {
     std::ifstream sourceFile(dataSourceFile);
     if (!sourceFile.is_open()) {
@@ -110,6 +113,7 @@ void WeatherDataCollection::loadFromFiles(const std::string& dataSourceFile) {
     sourceFile.close();
 }
 
+// Parse and add record
 void WeatherDataCollection::parseAndAddRecord(const std::string& line) {
     // Skip lines that are just commas or whitespace
     if (line.find_first_not_of(" ,\t\r\n") == std::string::npos) {
@@ -126,7 +130,7 @@ void WeatherDataCollection::parseAndAddRecord(const std::string& line) {
         }
 
         // Check if we have enough columns
-        if (tokens.size() < 13) {
+        if (tokens.size() < 18) {
             std::cerr << "Warning: Skipping line with insufficient columns: " << line << std::endl;
             return;
         }
@@ -137,12 +141,15 @@ void WeatherDataCollection::parseAndAddRecord(const std::string& line) {
         // Parse numerical values - CORRECT COLUMN INDICES:
         // Based on your CSV: WAST,DP,Dta,Dts,EV,QFE,QFF,QNH,RF,RH,S,SR,T,ST1,ST2,ST3,ST4,Sx
         // Columns: 0=Date, 8=S (wind speed), 11=SR (solar radiation), 12=T (temperature)
-        double windSpeed = std::stod(tokens[8]);      // Column 9: S (wind speed)
+        double windSpeed = std::stod(tokens[10]);      // Column 11: S (wind speed)
         double solarRadiation = std::stod(tokens[11]); // Column 12: SR (solar radiation)
-        double temperature = std::stod(tokens[12]);    // Column 13: T (temperature)
+        double temperature = std::stod(tokens[17]);    // Column 18: T (temperature)
 
         WeatherRecord record(date, windSpeed, temperature, solarRadiation);
         addWeatherRecord(record);
+
+        // Debug
+        std::cout << "Parsed record: " << date << " WS: " << windSpeed << " Temp: " << temperature << " Solar: " << solarRadiation << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Error parsing line: " << line << " - " << e.what() << std::endl;
@@ -177,8 +184,10 @@ std::vector<WeatherRecord> WeatherDataCollection::getDataForMonth(int month) con
     std::vector<WeatherRecord> result;
 
     if (monthExists(month))
-    {
-        for (const auto& recordPtr : dataByMonth.at(month))
+        {
+        // Use at() to access the vector
+        const auto& records = dataByMonth.at(month);
+        for (const auto& recordPtr : records)
         {
             result.push_back(*recordPtr);
         }
@@ -204,6 +213,7 @@ void collectByMonth(const WeatherRecord& record, void* context) {
     }
 }
 
+// Calculation of SPCC
 double WeatherDataCollection::calculateSPCC(int month, const std::string& correlationType) const {
     auto monthlyData = getDataForMonth(month);
     if (monthlyData.empty()) {
@@ -228,7 +238,7 @@ double WeatherDataCollection::calculateSPCC(int month, const std::string& correl
     return Statistics::calculateSPCC(x, y);
 }
 
-// New implementation for Lab 11
+// New implementation for Lab 11 / get the data for the month and year
 std::vector<WeatherRecord> WeatherDataCollection::getDataForYearMonth(int year, int month) const
 {
     std::vector<WeatherRecord> result;
@@ -237,7 +247,7 @@ std::vector<WeatherRecord> WeatherDataCollection::getDataForYearMonth(int year, 
     {
         for (const auto& recordPtr : dataByMonth.at(month))
         {
-            if (recordPtr->date.GetYear() == year)
+            if (recordPtr && recordPtr->date.GetYear() == year)
             {
                 result.push_back(*recordPtr);
             }
@@ -255,7 +265,11 @@ namespace Statistics
         if (values.empty())
             return 0.0;
 
-        double sum = std::accumulate(values.begin(), values.end(), 0.0);
+        double sum = 0.0;
+        for (double val : values)
+        {
+            sum += val;
+        }
         return sum / values.size();
     }
 
@@ -271,7 +285,6 @@ namespace Statistics
         {
             sumSq += (val - mean) * (val - mean);
         }
-
         return std::sqrt(sumSq / (values.size() - 1));
     }
 
@@ -287,7 +300,6 @@ namespace Statistics
         {
             sumAbs += std::abs(val - mean);
         }
-
         return sumAbs / values.size();
     }
 
@@ -320,8 +332,8 @@ namespace Statistics
     }
 }
 
-void WeatherDataCollection::generateMonthlyStats(int year, const std::string& filename) const
-{
+// Generate Monthly statistics for the weather report
+void WeatherDataCollection::generateMonthlyStats(int year, const std::string& filename) const {
     std::ofstream file(filename);
     if (!file.is_open())
     {
@@ -329,13 +341,22 @@ void WeatherDataCollection::generateMonthlyStats(int year, const std::string& fi
         return;
     }
 
+    // Write the year header exactly as specified
     file << year << std::endl;
+
+    std::string monthNames[] = {"January", "February", "March", "April", "May", "June",
+                               "July", "August", "September", "October", "November", "December"};
 
     for (int month = 1; month <= 12; month++)
     {
         auto monthlyData = getDataForYearMonth(year, month);
+
         if (monthlyData.empty())
+        {
+            // Write empty data for months with no data
+            file << monthNames[month-1] << ",0.0(0.0, 0.0),0.0(0.0, 0.0),0.0" << std::endl;
             continue;
+        }
 
         // Extract data for calculations
         std::vector<double> windSpeeds, temperatures, solarRads;
@@ -349,7 +370,7 @@ void WeatherDataCollection::generateMonthlyStats(int year, const std::string& fi
             totalSolar += record.solarRadiation;
         }
 
-        // Calculate statistics using decoupled functions
+        // Calculate statistics using DECOUPLED functions
         double avgWind = Statistics::calculateMean(windSpeeds);
         double avgTemp = Statistics::calculateMean(temperatures);
         double stdWind = Statistics::calculateStdDev(windSpeeds);
@@ -357,10 +378,7 @@ void WeatherDataCollection::generateMonthlyStats(int year, const std::string& fi
         double madWind = Statistics::calculateMAD(windSpeeds);
         double madTemp = Statistics::calculateMAD(temperatures);
 
-        // Write to file in the required format
-        std::string monthNames[] = {"January", "February", "March", "April", "May", "June",
-                                   "July", "August", "September", "October", "November", "December"};
-
+        // Write in EXACT format: Month,AvgWS(std,mad),AvgTemp(std,mad),TotalSolar
         file << monthNames[month-1] << ","
              << avgWind << "(" << stdWind << ", " << madWind << "),"
              << avgTemp << "(" << stdTemp << ", " << madTemp << "),"
@@ -368,10 +386,10 @@ void WeatherDataCollection::generateMonthlyStats(int year, const std::string& fi
     }
 
     file.close();
-    std::cout << "Monthly statistics are written to " << filename << std::endl;
+    std::cout << "Monthly statistics written to " << filename << std::endl;
 }
 
-
+// Display all data
 void WeatherDataCollection::displayAllData() const {
     std::cout << "=== All Weather Data (" << getTotalRecords() << " records) ===" << std::endl;
     weatherDataBST.inOrder([](const WeatherRecord& record)

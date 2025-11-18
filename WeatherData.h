@@ -30,8 +30,8 @@ public:
         return internalMap.find(key) != internalMap.end();
     }
 
-    V& operator[](const K& key) {
-        return internalMap[key];
+    V& at(const K& key) {
+        return internalMap[key];  // Use operator[] for non-const access
     }
 
     const V& at(const K& key) const {
@@ -90,6 +90,8 @@ public:
     // Utility methods
     void displayAllData() const;
     int getTotalRecords() const;
+
+    std::vector<int> getAvailableYears() const;
 
 private:
     void parseAndAddRecord(const std::string& line);
