@@ -1,0 +1,47 @@
+ICT283 Assignment 2 - Progress Evaluation
+Student Name: [Ang Kai Jun Elson]
+Date: [18/11/2025]
+
+1. MENU OPTIONS IMPLEMENTATION:
+- All required menu options (1-6) have been implemented and are functional
+- Option 3: Pearson Correlation Coefficient calculation working with user input
+- Option 4: Monthly statistics with MAD calculation implemented and outputs to CSV
+- Robust error handling for file I/O and user input
+- Data validation prevents crashes from malformed input
+
+2. BACKUP STRATEGY:
+- Using Git for version control with regular commits
+- Remote repository on [GitHub/GitLab] for off-site backup
+- Daily commits with descriptive messages
+- Branch strategy: main for stable code, develop for features
+
+3. MINIMUM REQUIREMENTS SATISFACTION:
+- BST implementation: Complete with recursive operations and function pointers
+- Map data structure: Custom Map wrapper implemented (eligible for bonus)
+- Statistical functions: Completely decoupled from weather data types
+- File I/O: Robust parsing handles edge cases (blank lines, malformed data)
+- Menu system: Fully functional with all required options
+
+4. CUSTOM MAP CLASS (Bonus Eligibility):
+- Minimal but complete interface (4 essential methods + iterators)
+- Template design allows reuse with any types
+- Encapsulates std::map while providing clean abstraction
+- Defensible design: Only essential map operations provided
+
+DESIGN JUSTIFICATIONS:
+- BST Choice: Efficient for date-based queries and maintains chronological order
+- Map Choice: Fast O(1) month-based data retrieval, natural grouping of data
+- Statistical Decoupling: Functions work with any numeric data, not just weather
+- Template Design: Maximum code reuse and type safety
+
+LESSONS LEARNED:
+- Importance of robust error handling for file parsing
+- Value of decoupled statistical functions for testing and reuse
+- Benefits of minimal interfaces in custom data structures
+- Need for comprehensive input validation in user interfaces
+
+CURRENT PROGRESS:
+- All core functionality implemented and tested
+- Code builds without warnings with C++11 and strict settings
+- CppCheck analysis shows no critical issues
+- Ready for demonstration and further development

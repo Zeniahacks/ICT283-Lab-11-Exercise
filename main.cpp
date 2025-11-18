@@ -11,7 +11,7 @@ private:
     bool dataLoaded;
 
 public:
-    Assignment2App() : dataLoaded(false) {}
+    Assignment2App() : weatherData(), dataLoaded(false) {}
 
     void run()
     {

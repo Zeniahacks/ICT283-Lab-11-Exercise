@@ -1,0 +1,32 @@
+# depslib dependency file v1.0
+1763454553 source:c:\users\elson\desktop\ict283 data structures and abstractions\ict283 lab 11\main.cpp
+	<iostream>
+	<string>
+	"WeatherData.h"
+
+1763460550 c:\users\elson\desktop\ict283 data structures and abstractions\ict283 lab 11\weatherdata.h
+	"Date.h"
+	"Bst.h"
+	<string>
+	<vector>
+	<map>
+	<cmath>
+
+1762961699 c:\users\elson\desktop\ict283 data structures and abstractions\ict283 lab 11\date.h
+	<iostream>
+	<string>
+
+1762960096 c:\users\elson\desktop\ict283 data structures and abstractions\ict283 lab 11\bst.h
+	<iostream>
+	<functional>
+
+1763456792 source:c:\users\elson\desktop\ict283 data structures and abstractions\ict283 lab 11\weatherdata.cpp
+	"WeatherData.h"
+	<fstream>
+	<sstream>
+	<iostream>
+	<cmath>
+	<algorithm>
+	<numeric>
+	<stdexcept>
+

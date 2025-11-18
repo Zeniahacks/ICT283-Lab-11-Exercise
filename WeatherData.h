@@ -12,6 +12,39 @@
 class WeatherRecord;
 class WeatherDataCollection;
 
+// Custom Map wrapper for bonus marks
+template<typename K, typename V>
+class Map {
+private:
+    std::map<K, V> internalMap;
+
+public:
+    Map() = default; // Default constructor
+
+    // Minimal but complete interface
+    void insert(const K& key, const V& value) {
+        internalMap[key] = value;
+    }
+
+    bool contains(const K& key) const {
+        return internalMap.find(key) != internalMap.end();
+    }
+
+    V& operator[](const K& key) {
+        return internalMap[key];
+    }
+
+    const V& at(const K& key) const {
+        return internalMap.at(key);
+    }
+
+    // Iterator support
+    typename std::map<K, V>::iterator begin() { return internalMap.begin(); }
+    typename std::map<K, V>::iterator end() { return internalMap.end(); }
+    typename std::map<K, V>::const_iterator begin() const { return internalMap.begin(); }
+    typename std::map<K, V>::const_iterator end() const { return internalMap.end(); }
+};
+
 /// @class WeatherRecord
 class WeatherRecord {
 public:
@@ -34,7 +67,7 @@ public:
 class WeatherDataCollection {
 private:
     Bst<WeatherRecord> weatherDataBST;
-    std::map<int, std::vector<WeatherRecord*>> dataByMonth; // Using custom map
+    Map<int, std::vector<WeatherRecord*>> dataByMonth; // Using custom map
 
 public:
     WeatherDataCollection();
@@ -66,51 +99,9 @@ private:
     static double calculateMean(const std::vector<double>& values);
     static double calculateStdDev(const std::vector<double>& values);
     static double calculateMAD(const std::vector<double>& values);
-};
 
-// Custom Map wrapper for bonus marks
-template<typename K, typename V>
-class Map {
-private:
-    std::map<K, V> internalMap;
-
-public:
-    Map() = default; // Default constructor
-
-    // Minimal but complete interface
-    void insert(const K& key, const V& value) {
-        internalMap[key] = value;
-    }
-
-    bool contains(const K& key) const {
-        return internalMap.find(key) != internalMap.end();
-    }
-
-    V& operator[](const K& key) {
-        return internalMap[key];
-    }
-
-    const V& at(const K& key) const {
-        return internalMap.at(key);
-    }
-
-    int size() const {
-        return internalMap.size();
-    }
-
-    bool empty() const {
-        return internalMap.empty();
-    }
-
-    void clear() {
-        internalMap.clear();
-    }
-
-    // Iterator support
-    typename std::map<K, V>::iterator begin() { return internalMap.begin(); }
-    typename std::map<K, V>::iterator end() { return internalMap.end(); }
-    typename std::map<K, V>::const_iterator begin() const { return internalMap.begin(); }
-    typename std::map<K, V>::const_iterator end() const { return internalMap.end(); }
+    // Helper method to check if month exists in map
+    bool monthExists(int month) const;
 };
 
 // Statistical Functions

@@ -5,6 +5,7 @@
 #include <cmath>
 #include <algorithm>
 #include <numeric>
+#include <stdexcept>
 
 // WeatherRecord implementation
 WeatherRecord::WeatherRecord(const Date& d, double ws, double temp, double sr)
@@ -37,7 +38,18 @@ WeatherDataCollection::~WeatherDataCollection() {}
 void WeatherDataCollection::addWeatherRecord(const WeatherRecord& record) {
     weatherDataBST.insert(record);
     int month = record.date.GetMonth();
+
+    // Use custom Map's insert method
+    if (!dataByMonth.contains(month))
+    {
+        dataByMonth.insert(month, std::vector<WeatherRecord*>());
+    }
+
     dataByMonth[month].push_back(const_cast<WeatherRecord*>(&record));
+}
+
+bool WeatherDataCollection::monthExists(int month) const {
+    return dataByMonth.contains(month);
 }
 
 void WeatherDataCollection::loadFromFiles(const std::string& dataSourceFile) {
@@ -48,30 +60,51 @@ void WeatherDataCollection::loadFromFiles(const std::string& dataSourceFile) {
     }
 
     std::string filename;
+    int fileProcessed = 0;
+
+    std::cout << "Reading files from: " << dataSourceFile << std::endl;
+
     while (std::getline(sourceFile, filename)) {
+        if (filename.empty() || filename[0] == '#')
+            continue;
+
+        // Remove any extra whitespace
+        filename.erase(0, filename.find_first_not_of(" \t"));
+        filename.erase(filename.find_last_not_of(" \t") + 1);
+
         if (filename.empty()) continue;
 
+        std::cout << "Processing file: " << filename << std::endl;
+
         std::ifstream dataFile(filename);
-        if (!dataFile.is_open()) {
+        if (!dataFile.is_open())
+        {
             std::cerr << "Error: Could not open data file: " << filename << std::endl;
             continue;
         }
 
         std::string line;
         bool firstLine = true;
+        int recordsProcessed = 0;
 
         while (std::getline(dataFile, line)) {
             if (line.empty()) continue;
 
-            if (firstLine) {
-                firstLine = false;
+            if (firstLine)
+            {
+                if (line.find("WAST") != std::string::npos || line.find("Date") != std::string::npos)
+                {
+                    firstLine = false;
+                }
                 continue;
             }
-
             parseAndAddRecord(line);
+            recordsProcessed++;
         }
 
         dataFile.close();
+
+        fileProcessed++;
     }
 
     sourceFile.close();
@@ -132,9 +165,10 @@ Date WeatherDataCollection::parseDate(const std::string& dateTimeString) {
 std::vector<WeatherRecord> WeatherDataCollection::getDataForMonth(int month) const {
     std::vector<WeatherRecord> result;
 
-    auto it = dataByMonth.find(month);
-    if (it != dataByMonth.end()) {
-        for (const auto& recordPtr : it->second) {
+    if (monthExists(month))
+    {
+        for (const auto& recordPtr : dataByMonth.at(month))
+        {
             result.push_back(*recordPtr);
         }
     }
@@ -188,7 +222,7 @@ std::vector<WeatherRecord> WeatherDataCollection::getDataForYearMonth(int year, 
 {
     std::vector<WeatherRecord> result;
 
-    if (dataByMonth.contains(month))
+    if (monthExists(month))
     {
         for (const auto& recordPtr : dataByMonth.at(month))
         {
@@ -220,7 +254,7 @@ namespace Statistics
             return 0.0;
 
         double mean = calculateMean(values);
-        return sumSq = 0.0;
+        double sumSq = 0.0;
 
         for (double val : values)
         {
@@ -236,7 +270,7 @@ namespace Statistics
             return 0.0;
 
         double mean = calculateMean(values);
-        return sumAbs = 0.0;
+        double sumAbs = 0.0;
 
         for (double val : values)
         {
