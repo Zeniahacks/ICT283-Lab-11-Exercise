@@ -111,24 +111,35 @@ void WeatherDataCollection::loadFromFiles(const std::string& dataSourceFile) {
 }
 
 void WeatherDataCollection::parseAndAddRecord(const std::string& line) {
+    // Skip lines that are just commas or whitespace
+    if (line.find_first_not_of(" ,\t\r\n") == std::string::npos) {
+        return;
+    }
+
     std::stringstream ss(line);
     std::string token;
     std::vector<std::string> tokens;
 
-    while (std::getline(ss, token, ',')) {
-        tokens.push_back(token);
-    }
-
-    if (tokens.size() < 17) {
-        std::cerr << "Error: Invalid data format in line: " << line << std::endl;
-        return;
-    }
-
     try {
+        while (std::getline(ss, token, ',')) {
+            tokens.push_back(token);
+        }
+
+        // Check if we have enough columns
+        if (tokens.size() < 13) {
+            std::cerr << "Warning: Skipping line with insufficient columns: " << line << std::endl;
+            return;
+        }
+
+        // Parse date
         Date date = parseDate(tokens[0]);
-        double windSpeed = std::stod(tokens[8]);
-        double temperature = std::stod(tokens[11]);
-        double solarRadiation = std::stod(tokens[12]);
+
+        // Parse numerical values - CORRECT COLUMN INDICES:
+        // Based on your CSV: WAST,DP,Dta,Dts,EV,QFE,QFF,QNH,RF,RH,S,SR,T,ST1,ST2,ST3,ST4,Sx
+        // Columns: 0=Date, 8=S (wind speed), 11=SR (solar radiation), 12=T (temperature)
+        double windSpeed = std::stod(tokens[8]);      // Column 9: S (wind speed)
+        double solarRadiation = std::stod(tokens[11]); // Column 12: SR (solar radiation)
+        double temperature = std::stod(tokens[12]);    // Column 13: T (temperature)
 
         WeatherRecord record(date, windSpeed, temperature, solarRadiation);
         addWeatherRecord(record);

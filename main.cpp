@@ -111,9 +111,9 @@ private:
         }
 
         cout << "\nSample Pearson Correlation Coefficient for Month" << endl;
-        cout << "S_T" << weatherData.calculateSPCC(month, "S_T") << endl;
-        cout << "S_R" << weatherData.calculateSPCC(month, "S_R") << endl;
-        cout << "T_R" << weatherData.calculateSPCC(month, "T_R") << endl;
+        cout << "S_T: " << weatherData.calculateSPCC(month, "S_T") << endl;
+        cout << "S_R: " << weatherData.calculateSPCC(month, "S_R") << endl;
+        cout << "T_R: " << weatherData.calculateSPCC(month, "T_R") << endl;
     }
 
     void generateReport()
