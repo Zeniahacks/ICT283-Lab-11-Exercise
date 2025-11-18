@@ -304,10 +304,27 @@ void WeatherDataCollection::generateMonthlyStats(int year, const std::string& fi
             totalSolar += record.solarRadiation;
         }
 
+        // Calculate statistics using decoupled functions
+        double avgWind = Statistics::calculateMean(windSpeeds);
+        double avgTemp = Statistics::calculateMean(temperatures);
+        double stdWind = Statistics::calculateStdDev(windSpeeds);
+        double stdTemp = Statistics::calculateStdDev(temperatures);
+        double madWind = Statistics::calculateMAD(windSpeeds);
+        double madTemp = Statistics::calculateMAD(temperatures);
 
+        // Write to file in the required format
+        std::string monthNames[] = {"January", "February", "March", "April", "May", "June",
+                                   "July", "August", "September", "October", "November", "December"};
+
+        file << monthNames[month-1] << ","
+             << avgWind << "(" << stdWind << ", " << madWind << "),"
+             << avgTemp << "(" << stdTemp << ", " << madTemp << "),"
+             << totalSolar << std::endl;
     }
-}
 
+    file.close();
+    std::cout << "Monthly statistics are written to " << filename << std::endl;
+}
 
 
 void WeatherDataCollection::displayAllData() const {
