@@ -1,47 +1,75 @@
 ICT283 Assignment 2 - Progress Evaluation
 Student Name: [Ang Kai Jun Elson]
+Student ID: [35771004]
 Date: [18/11/2025]
 
 1. MENU OPTIONS IMPLEMENTATION:
-- All required menu options (1-6) have been implemented and are functional
-- Option 3: Pearson Correlation Coefficient calculation working with user input
-- Option 4: Monthly statistics with MAD calculation implemented and outputs to CSV
-- Robust error handling for file I/O and user input
-- Data validation prevents crashes from malformed input
+- All 6 menu options fully implemented and tested
+- Option 1: Robust file loading with error handling for malformed data and missing files
+- Option 2: Complete data display using BST in-order traversal
+- Option 3: Pearson Correlation Coefficient calculation with month validation
+- Option 4: Monthly statistics with Mean Absolute Deviation implemented, outputs to CSV in exact format
+- Options 5 & 6: Data structure info and clean exit functionality
+- Comprehensive input validation prevents crashes from invalid user input
 
 2. BACKUP STRATEGY:
-- Using Git for version control with regular commits
-- Remote repository on [GitHub/GitLab] for off-site backup
-- Daily commits with descriptive messages
-- Branch strategy: main for stable code, develop for features
+- Git version control with daily commits and descriptive commit messages
+- Remote repository on GitHub for off-site backup and collaboration
+- Branch strategy: main branch for stable releases, feature branches for development
+- Regular pushes to remote repository to prevent data loss
 
 3. MINIMUM REQUIREMENTS SATISFACTION:
-- BST implementation: Complete with recursive operations and function pointers
-- Map data structure: Custom Map wrapper implemented (eligible for bonus)
-- Statistical functions: Completely decoupled from weather data types
-- File I/O: Robust parsing handles edge cases (blank lines, malformed data)
-- Menu system: Fully functional with all required options
+- BST Implementation: Complete with recursive insert/search, multiple traversal methods, and function pointer support
+- Custom Map Class: Fully implemented with minimal interface (insert, contains, at, iterators)
+- Statistical Functions: Completely decoupled from weather data types using std::vector<double>
+- File I/O: Robust CSV parsing handles edge cases (blank lines, insufficient columns, malformed data)
+- Data Validation: Comprehensive date validation and numerical value checking
 
 4. CUSTOM MAP CLASS (Bonus Eligibility):
-- Minimal but complete interface (4 essential methods + iterators)
-- Template design allows reuse with any types
-- Encapsulates std::map while providing clean abstraction
-- Defensible design: Only essential map operations provided
+- Minimal interface with only 4 essential methods: insert, contains, at, and size
+- Template design provides type safety and reusability across different data types
+- Encapsulates std::map while maintaining clean, focused abstraction
+- Iterator support for range-based operations while maintaining minimalism
+- Defensible design philosophy: Only includes operations essential to map functionality
 
 DESIGN JUSTIFICATIONS:
-- BST Choice: Efficient for date-based queries and maintains chronological order
-- Map Choice: Fast O(1) month-based data retrieval, natural grouping of data
-- Statistical Decoupling: Functions work with any numeric data, not just weather
-- Template Design: Maximum code reuse and type safety
+- BST Choice: Optimal for chronological data organization, efficient O(log n) operations, and natural date-based sorting
+- Statistical Decoupling: All statistical functions operate on std::vector<double>, making them reusable for any numerical analysis
+- Template Architecture: Bst and Map templates provide maximum code reuse and type safety
+- Function Pointers: Enable flexible traversal strategies without modifying core BST logic
+- Error Handling: Multi-layer validation at file parsing, user input, and data processing stages
+
+PROBLEMS ENCOUNTERED AND SOLUTIONS:
+- Pointer Invalidation: Initially stored pointers in monthly map, but BST rebalancing caused invalidation
+- Solution: Implemented direct BST traversal with function pointers for monthly data retrieval
+- Column Index Mismatch: CSV format had different column ordering than expected
+- Solution: Added debug output and corrected column indices based on actual CSV structure
+- Data Validation: Malformed CSV lines caused parsing failures
+- Solution: Implemented comprehensive error handling with try-catch blocks and validation
 
 LESSONS LEARNED:
-- Importance of robust error handling for file parsing
-- Value of decoupled statistical functions for testing and reuse
-- Benefits of minimal interfaces in custom data structures
-- Need for comprehensive input validation in user interfaces
+- Importance of defensive programming with extensive input validation
+- Value of decoupled statistical functions for testing and reuse in other projects
+- Benefits of template-based design for code flexibility and type safety
+- Need for careful pointer management in complex data structures
+- Advantages of function pointers for implementing flexible traversal strategies
+
+TESTING AND VALIDATION:
+- Successful processing of multiple CSV files with different date ranges
+- Correct handling of edge cases: blank lines, malformed data, insufficient columns
+- Statistical output verified against manual calculations for accuracy
+- Seasonal patterns in output data match expected meteorological trends
+- All menu options tested for functionality and error conditions
 
 CURRENT PROGRESS:
-- All core functionality implemented and tested
-- Code builds without warnings with C++11 and strict settings
-- CppCheck analysis shows no critical issues
-- Ready for demonstration and further development
+- All core assignment requirements fully implemented and tested
+- Code compiles without warnings using C++11 with strict settings
+- CPPCheck static analysis shows no critical issues or security vulnerabilities
+- Output formats match exact specification requirements
+- Ready for final demonstration and submission
+
+FUTURE ENHANCEMENTS:
+- Potential for BST balancing algorithms to optimize performance
+- Additional statistical analyses could be easily added due to decoupled design
+- Map class could be extended with more operations if needed for other use cases
+- Support for additional weather parameters could be added with minimal changes
