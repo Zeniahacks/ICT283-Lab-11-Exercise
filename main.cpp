@@ -44,6 +44,7 @@ private:
     // Switch choices following the above display menu as provided
     void processChoice(int choice)
     {
+<<<<<<< HEAD
         switch(choice)
         {
         case 1:
@@ -67,6 +68,9 @@ private:
         default:
             cout << "Invalid choice. Please try again." << endl;
         }
+=======
+
+>>>>>>> 5cec736332ab5d9bf247ad688ac8f55bd7c5fd63
     }
 
 
@@ -142,12 +146,21 @@ private:
 
         cout << "\n=== Data Structure Information ===" << endl;
         cout << "Total records: " << weatherData.getTotalRecords() << endl;
+<<<<<<< HEAD
 
         // Demonstration of map usage
         Map<string, int> testMap;
         testMap.insert("test", 42);
         cout << "Custom Map test: " << testMap.at("test") << endl;
     }
+=======
+    }
+
+    // Demonstration of map usage
+    Map<string, int> testMap;
+    testMap.insert("test", 42);
+    cout << "Custom Map test: " << testMap.at("test") << endl;
+>>>>>>> 5cec736332ab5d9bf247ad688ac8f55bd7c5fd63
 };
 
 
